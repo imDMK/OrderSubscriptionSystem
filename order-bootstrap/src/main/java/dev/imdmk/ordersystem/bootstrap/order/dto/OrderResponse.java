@@ -1,4 +1,4 @@
-package dev.imdmk.ordersystem.bootstrap.dto;
+package dev.imdmk.ordersystem.bootstrap.order.dto;
 
 import java.util.UUID;
 

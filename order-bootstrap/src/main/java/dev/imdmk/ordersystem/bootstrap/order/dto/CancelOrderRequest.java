@@ -1,10 +1,9 @@
-package dev.imdmk.ordersystem.bootstrap.dto;
+package dev.imdmk.ordersystem.bootstrap.order.dto;
 
 import jakarta.validation.constraints.NotNull;
 
 import java.util.UUID;
 
-public record PayOrderRequest(
+public record CancelOrderRequest(
         @NotNull UUID orderId
-) {}
-
+) { }

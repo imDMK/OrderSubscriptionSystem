@@ -1,4 +1,4 @@
-package dev.imdmk.ordersystem.bootstrap;
+package dev.imdmk.ordersystem.bootstrap.order;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

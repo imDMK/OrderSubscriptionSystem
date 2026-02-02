@@ -1,10 +1,14 @@
 package dev.imdmk.ordersystem.domain.order;
 
+import dev.imdmk.ordersystem.domain.event.DomainEvent;
+import dev.imdmk.ordersystem.domain.order.event.OrderCancelEvent;
+import dev.imdmk.ordersystem.domain.order.event.OrderPaidEvent;
 import dev.imdmk.ordersystem.domain.order.state.CancelledOrder;
 import dev.imdmk.ordersystem.domain.order.state.NewOrder;
 import dev.imdmk.ordersystem.domain.order.state.OrderState;
 import dev.imdmk.ordersystem.domain.order.state.PaidOrder;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -15,16 +19,18 @@ public final class Order {
     private final Money total;
     private OrderState state;
 
+    private final List<DomainEvent> domainEvents = new ArrayList<>();
+
     private Order(
             OrderId id,
             List<OrderItem> items,
             Money total,
             OrderState state
     ) {
-        this.id = Objects.requireNonNull(id);
+        this.id = Objects.requireNonNull(id, "id");
         this.items = List.copyOf(items);
-        this.total = Objects.requireNonNull(total);
-        this.state = Objects.requireNonNull(state);
+        this.total = Objects.requireNonNull(total, "total");
+        this.state = Objects.requireNonNull(state, "state");
     }
 
     public static Order create(List<OrderItem> items) {
@@ -53,20 +59,32 @@ public final class Order {
         return new Order(id, items, total, state);
     }
 
-    public boolean isPaid() {
-        return this.state instanceof PaidOrder;
-    }
-
     public void pay() {
         this.state = state.pay();
-    }
-
-    public boolean isCancelled() {
-        return this.state instanceof CancelledOrder;
+        registerEvent(OrderPaidEvent.now(this.id));
     }
 
     public void cancel() {
         this.state = state.cancel();
+        registerEvent(OrderCancelEvent.now(this.id));
+    }
+
+    public List<DomainEvent> pullDomainEvents() {
+        List<DomainEvent> events = List.copyOf(domainEvents);
+        domainEvents.clear();
+        return events;
+    }
+
+    private void registerEvent(DomainEvent event) {
+        domainEvents.add(event);
+    }
+
+    public boolean isPaid() {
+        return state instanceof PaidOrder;
+    }
+
+    public boolean isCancelled() {
+        return state instanceof CancelledOrder;
     }
 
     public OrderId getId() {
@@ -84,5 +102,4 @@ public final class Order {
     public OrderState getState() {
         return state;
     }
-
 }

@@ -3,6 +3,7 @@ package dev.imdmk.ordersystem.application.order.command;
 import dev.imdmk.ordersystem.domain.order.Money;
 
 import java.util.List;
+import java.util.Objects;
 
 public record CreateOrderCommand(
         List<Item> items
@@ -19,9 +20,11 @@ public record CreateOrderCommand(
             Money price
     ) {
         public Item {
+            Objects.requireNonNull(productId, "productId cannot be null");
             if (quantity <= 0) {
                 throw new IllegalArgumentException("Order item quantity must be greater than zero");
             }
+            Objects.requireNonNull(price, "price cannot be null");
         }
     }
 }
