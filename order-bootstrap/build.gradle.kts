@@ -22,11 +22,3 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
-
-sourceSets {
-    main {
-        resources {
-            srcDir("src/main/resources")
-        }
-    }
-}

@@ -5,6 +5,7 @@ import dev.imdmk.ordersystem.application.order.command.CreateOrderCommand;
 import dev.imdmk.ordersystem.application.order.command.PayOrderCommand;
 import dev.imdmk.ordersystem.application.order.exception.OrderNotFoundException;
 import dev.imdmk.ordersystem.application.order.repository.OrderRepository;
+import dev.imdmk.ordersystem.application.subscription.service.SubscriptionService;
 import dev.imdmk.ordersystem.domain.event.DomainEvent;
 import dev.imdmk.ordersystem.domain.order.Money;
 import dev.imdmk.ordersystem.domain.order.Order;
@@ -27,10 +28,11 @@ import static org.mockito.Mockito.when;
 
 class OrderServiceTest {
 
-    OrderRepository repository = mock(OrderRepository.class);
+    OrderRepository orderRepository = mock(OrderRepository.class);
+    SubscriptionService subscriptionService = mock(SubscriptionService.class);
     DomainEventPublisher publisher = mock(DomainEventPublisher.class);
 
-    OrderService service = new OrderService(repository, publisher);
+    OrderService service = new OrderService(orderRepository, subscriptionService, publisher);
 
     @Test
     void shouldCreateOrderAndPersistIt() {
@@ -41,7 +43,7 @@ class OrderServiceTest {
         UUID id = service.createOrder(command);
 
         ArgumentCaptor<Order> captor = ArgumentCaptor.forClass(Order.class);
-        verify(repository).save(captor.capture());
+        verify(orderRepository).save(captor.capture());
 
         Order saved = captor.getValue();
         assertThat(saved.getId().value()).isEqualTo(id);
@@ -53,12 +55,12 @@ class OrderServiceTest {
                 new dev.imdmk.ordersystem.domain.order.OrderItem("P-1", 1, Money.from("10.00"))
         ));
 
-        when(repository.findById(order.getId()))
+        when(orderRepository.findByOrderId(order.getId()))
                 .thenReturn(Optional.of(order));
 
         service.pay(new PayOrderCommand(order.getId().value()));
 
-        verify(repository).save(order);
+        verify(orderRepository).save(order);
         verify(publisher, atLeastOnce()).publish(any(DomainEvent.class));
     }
 
@@ -66,7 +68,7 @@ class OrderServiceTest {
     void shouldThrowWhenPayingNonExistingOrder() {
         UUID id = UUID.randomUUID();
 
-        when(repository.findById(new OrderId(id)))
+        when(orderRepository.findByOrderId(new OrderId(id)))
                 .thenReturn(Optional.empty());
 
         assertThatThrownBy(() ->

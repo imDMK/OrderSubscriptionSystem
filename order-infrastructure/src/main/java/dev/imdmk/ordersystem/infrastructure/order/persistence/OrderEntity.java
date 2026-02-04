@@ -15,6 +15,7 @@ import lombok.Getter;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -43,9 +44,9 @@ public class OrderEntity {
     protected OrderEntity() {}
 
     public OrderEntity(UUID id, OrderStatusEntity status, BigDecimal total) {
-        this.id = id;
-        this.status = status;
-        this.total = total;
+        this.id = Objects.requireNonNull(id, "id must not be null");
+        this.status = Objects.requireNonNull(status, "status must not be null");
+        this.total = Objects.requireNonNull(total, "total must not be null");
     }
 
     public void addItem(OrderItemEntity item) {

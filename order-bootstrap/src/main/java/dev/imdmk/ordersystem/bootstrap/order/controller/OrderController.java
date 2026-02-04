@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Objects;
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/orders")
 public final class OrderController {
@@ -24,13 +27,13 @@ public final class OrderController {
     private final OrderService service;
 
     public OrderController(OrderService service) {
-        this.service = service;
+        this.service = Objects.requireNonNull(service, "service cannot be null");
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public OrderResponse create(@RequestBody @Valid CreateOrderRequest request) {
-        var command = new CreateOrderCommand(
+        final CreateOrderCommand command = new CreateOrderCommand(
                 request.items().stream()
                         .map(i -> new CreateOrderCommand.Item(
                                 i.productId(),
@@ -40,8 +43,8 @@ public final class OrderController {
                         .toList()
         );
 
-        var id = service.createOrder(command);
-        return new dev.imdmk.ordersystem.bootstrap.order.dto.OrderResponse(id);
+        final UUID id = service.createOrder(command);
+        return new OrderResponse(id);
     }
 
     @PostMapping("/pay")

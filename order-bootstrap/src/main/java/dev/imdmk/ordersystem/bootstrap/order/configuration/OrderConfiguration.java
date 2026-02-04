@@ -3,6 +3,7 @@ package dev.imdmk.ordersystem.bootstrap.order.configuration;
 import dev.imdmk.ordersystem.application.event.DomainEventPublisher;
 import dev.imdmk.ordersystem.application.order.repository.OrderRepository;
 import dev.imdmk.ordersystem.application.order.service.OrderService;
+import dev.imdmk.ordersystem.application.subscription.service.SubscriptionService;
 import dev.imdmk.ordersystem.infrastructure.event.SpringDomainEventPublisher;
 import dev.imdmk.ordersystem.infrastructure.order.adapter.OrderRepositoryAdapter;
 import dev.imdmk.ordersystem.infrastructure.order.persistence.JpaOrderRepository;
@@ -29,9 +30,10 @@ public class OrderConfiguration {
 
     @Bean
     public OrderService orderService(
-            OrderRepository repository,
+            OrderRepository orderRepository,
+            SubscriptionService subscriptionService,
             DomainEventPublisher domainEventPublisher
     ) {
-        return new OrderService(repository, domainEventPublisher);
+        return new OrderService(orderRepository, subscriptionService, domainEventPublisher);
     }
 }

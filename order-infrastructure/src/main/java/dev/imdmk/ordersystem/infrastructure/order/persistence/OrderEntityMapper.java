@@ -18,7 +18,6 @@ public final class OrderEntityMapper {
     }
 
     public static Order toDomain(OrderEntity entity) {
-
         final List<OrderItem> items = entity.getItems().stream()
                 .map(e -> new OrderItem(
                         e.getProductId(),
@@ -42,7 +41,6 @@ public final class OrderEntityMapper {
     }
 
     public static OrderEntity toEntity(Order order) {
-
         final OrderEntity entity = new OrderEntity(
                 order.getId().value(),
                 mapStatus(order.getState()),

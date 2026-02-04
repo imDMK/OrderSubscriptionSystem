@@ -28,14 +28,6 @@ subprojects {
         }
     }
 
-    sourceSets {
-        main {
-            resources {
-                srcDir(emptyList<String>())
-            }
-        }
-    }
-
     tasks.withType<Test> {
         useJUnitPlatform()
     }

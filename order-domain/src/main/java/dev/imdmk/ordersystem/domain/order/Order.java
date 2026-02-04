@@ -1,6 +1,6 @@
 package dev.imdmk.ordersystem.domain.order;
 
-import dev.imdmk.ordersystem.domain.event.DomainEvent;
+import dev.imdmk.ordersystem.domain.common.AggregateRoot;
 import dev.imdmk.ordersystem.domain.order.event.OrderCancelEvent;
 import dev.imdmk.ordersystem.domain.order.event.OrderPaidEvent;
 import dev.imdmk.ordersystem.domain.order.state.CancelledOrder;
@@ -8,18 +8,15 @@ import dev.imdmk.ordersystem.domain.order.state.NewOrder;
 import dev.imdmk.ordersystem.domain.order.state.OrderState;
 import dev.imdmk.ordersystem.domain.order.state.PaidOrder;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public final class Order {
+public final class Order extends AggregateRoot {
 
     private final OrderId id;
     private final List<OrderItem> items;
     private final Money total;
     private OrderState state;
-
-    private final List<DomainEvent> domainEvents = new ArrayList<>();
 
     private Order(
             OrderId id,
@@ -61,22 +58,12 @@ public final class Order {
 
     public void pay() {
         this.state = state.pay();
-        registerEvent(OrderPaidEvent.now(this.id));
+        registerEvent(OrderPaidEvent.now(id));
     }
 
     public void cancel() {
         this.state = state.cancel();
-        registerEvent(OrderCancelEvent.now(this.id));
-    }
-
-    public List<DomainEvent> pullDomainEvents() {
-        List<DomainEvent> events = List.copyOf(domainEvents);
-        domainEvents.clear();
-        return events;
-    }
-
-    private void registerEvent(DomainEvent event) {
-        domainEvents.add(event);
+        registerEvent(OrderCancelEvent.now(id));
     }
 
     public boolean isPaid() {

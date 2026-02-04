@@ -8,6 +8,7 @@ import dev.imdmk.ordersystem.infrastructure.order.persistence.OrderEntity;
 import dev.imdmk.ordersystem.infrastructure.order.persistence.OrderEntityMapper;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Transactional
@@ -16,7 +17,7 @@ public class OrderRepositoryAdapter implements OrderRepository {
     private final JpaOrderRepository jpaRepository;
 
     public OrderRepositoryAdapter(JpaOrderRepository jpaRepository) {
-        this.jpaRepository = jpaRepository;
+        this.jpaRepository = Objects.requireNonNull(jpaRepository, "jpaRepository must not be null");
     }
 
     @Override
@@ -27,7 +28,7 @@ public class OrderRepositoryAdapter implements OrderRepository {
     }
 
     @Override
-    public Optional<Order> findById(OrderId id) {
+    public Optional<Order> findByOrderId(OrderId id) {
         return jpaRepository.findById(id.value())
                 .map(OrderEntityMapper::toDomain);
     }

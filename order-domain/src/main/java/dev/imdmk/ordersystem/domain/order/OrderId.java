@@ -6,7 +6,7 @@ import java.util.UUID;
 public record OrderId(UUID value) {
 
     public OrderId {
-        Objects.requireNonNull(value, "value");
+        Objects.requireNonNull(value, "id");
     }
 
     public static OrderId newId() {
