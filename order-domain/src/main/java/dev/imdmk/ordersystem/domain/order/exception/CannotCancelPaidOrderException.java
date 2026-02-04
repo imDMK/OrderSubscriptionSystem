@@ -5,3 +5,4 @@ public final class CannotCancelPaidOrderException extends RuntimeException {
         super("Cannot cancel paid order");
     }
 }
+

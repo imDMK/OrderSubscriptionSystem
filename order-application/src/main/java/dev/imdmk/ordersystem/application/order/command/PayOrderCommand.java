@@ -7,6 +7,6 @@ public record PayOrderCommand(
         UUID orderId
 ) {
     public PayOrderCommand {
-        Objects.requireNonNull(orderId, "orderId cannot be null");
+        Objects.requireNonNull(orderId, "orderId must not be null");
     }
 }

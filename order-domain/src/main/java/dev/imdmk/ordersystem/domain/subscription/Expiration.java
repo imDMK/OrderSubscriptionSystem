@@ -17,7 +17,7 @@ public final class Expiration {
     }
 
     public static Expiration until(Instant expiresAt) {
-        Objects.requireNonNull(expiresAt, "expiresAt");
+        Objects.requireNonNull(expiresAt, "expiresAt must not be null");
         return new Expiration(expiresAt);
     }
 

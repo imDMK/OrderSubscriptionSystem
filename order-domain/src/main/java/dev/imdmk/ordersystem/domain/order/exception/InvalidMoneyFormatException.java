@@ -5,4 +5,3 @@ public class InvalidMoneyFormatException extends RuntimeException {
         super("Invalid money value: " + value);
     }
 }
-

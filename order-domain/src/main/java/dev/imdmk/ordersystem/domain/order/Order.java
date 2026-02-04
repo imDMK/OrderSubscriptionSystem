@@ -24,14 +24,15 @@ public final class Order extends AggregateRoot {
             Money total,
             OrderState state
     ) {
-        this.id = Objects.requireNonNull(id, "id");
+        this.id = Objects.requireNonNull(id, "id must not be null");
         this.items = List.copyOf(items);
-        this.total = Objects.requireNonNull(total, "total");
-        this.state = Objects.requireNonNull(state, "state");
+        this.total = Objects.requireNonNull(total, "total must not be null");
+        this.state = Objects.requireNonNull(state, "state must not be null");
     }
 
     public static Order create(List<OrderItem> items) {
-        if (items == null || items.isEmpty()) {
+        Objects.requireNonNull(items, "items must not be null");
+        if (items.isEmpty()) {
             throw new IllegalArgumentException("Order must contain items");
         }
 

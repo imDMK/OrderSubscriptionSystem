@@ -20,11 +20,11 @@ public record CreateOrderCommand(
             Money price
     ) {
         public Item {
-            Objects.requireNonNull(productId, "productId cannot be null");
+            Objects.requireNonNull(productId, "productId must not be null");
             if (quantity <= 0) {
                 throw new IllegalArgumentException("Order item quantity must be greater than zero");
             }
-            Objects.requireNonNull(price, "price cannot be null");
+            Objects.requireNonNull(price, "price must not be null");
         }
     }
 }

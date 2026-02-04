@@ -5,4 +5,3 @@ public final class OrderAlreadyPaidException extends RuntimeException {
         super("Order already paid");
     }
 }
-

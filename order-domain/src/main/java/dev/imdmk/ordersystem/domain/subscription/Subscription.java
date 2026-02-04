@@ -11,9 +11,6 @@ import dev.imdmk.ordersystem.domain.subscription.exception.SubscriptionAlreadyEx
 
 import java.util.Objects;
 
-import static dev.imdmk.ordersystem.domain.subscription.SubscriptionStatus.ACTIVE;
-import static dev.imdmk.ordersystem.domain.subscription.SubscriptionStatus.CANCELLED;
-
 public final class Subscription extends AggregateRoot {
 
     private final SubscriptionId id;
@@ -27,10 +24,10 @@ public final class Subscription extends AggregateRoot {
             SubscriptionStatus status,
             Expiration expiration
     ) {
-        this.id = Objects.requireNonNull(id, "id");
-        this.orderId = Objects.requireNonNull(orderId, "orderId");
-        this.status = Objects.requireNonNull(status, "status");
-        this.expiration = Objects.requireNonNull(expiration, "expiration");
+        this.id = Objects.requireNonNull(id, "id must not be null");
+        this.orderId = Objects.requireNonNull(orderId, "orderId must not be null");
+        this.status = Objects.requireNonNull(status, "status must not be null");
+        this.expiration = Objects.requireNonNull(expiration, "expiration must not be null");
     }
 
     public static Subscription from(SubscriptionId id, OrderId orderId, SubscriptionStatus status, Expiration expiration) {
@@ -42,18 +39,18 @@ public final class Subscription extends AggregateRoot {
             Expiration expiration
     ) {
         final SubscriptionId subscriptionId = SubscriptionId.newId();
-        final Subscription subscription = from(subscriptionId, orderId, ACTIVE, expiration);
+        final Subscription subscription = from(subscriptionId, orderId, SubscriptionStatus.ACTIVE, expiration);
 
         subscription.registerEvent(SubscriptionStartedEvent.now(subscription.id, subscription.orderId));
         return subscription;
     }
 
     public void cancel() {
-        if (status == CANCELLED) {
+        if (isCancelled()) {
             throw new SubscriptionAlreadyCancelledException(id);
         }
 
-        this.status = CANCELLED;
+        this.status = SubscriptionStatus.CANCELLED;
         registerEvent(SubscriptionCancelledEvent.now(id, orderId));
     }
 
@@ -71,11 +68,11 @@ public final class Subscription extends AggregateRoot {
     }
 
     public boolean isActive() {
-        return status == ACTIVE && !expiration.isExpired();
+        return status == SubscriptionStatus.ACTIVE && !expiration.isExpired();
     }
 
     public boolean isCancelled() {
-        return status == CANCELLED;
+        return status == SubscriptionStatus.CANCELLED;
     }
 
     public SubscriptionId getId() {

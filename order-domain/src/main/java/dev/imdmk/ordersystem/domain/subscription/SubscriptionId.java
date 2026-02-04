@@ -6,7 +6,7 @@ import java.util.UUID;
 public record SubscriptionId(UUID value) {
 
     public SubscriptionId {
-        Objects.requireNonNull(value, "value");
+        Objects.requireNonNull(value, "subscriptionId value must not be null");
     }
 
     public static SubscriptionId newId() {

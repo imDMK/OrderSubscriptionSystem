@@ -52,12 +52,12 @@ public class OrderItemEntity {
             BigDecimal unitPrice,
             OrderEntity order
     ) {
-        this.productId = Objects.requireNonNull(productId, "productId");
-        this.unitPrice = Objects.requireNonNull(unitPrice, "unitPrice");
-        this.order = Objects.requireNonNull(order, "order");
+        this.productId = Objects.requireNonNull(productId, "productId must not be null");
+        this.unitPrice = Objects.requireNonNull(unitPrice, "unitPrice must not be null");
+        this.order = Objects.requireNonNull(order, "order must not be null");
 
         if (quantity <= 0) {
-            throw new IllegalArgumentException("Quantity must be positive");
+            throw new IllegalArgumentException("quantity must be positive");
         }
         this.quantity = quantity;
     }

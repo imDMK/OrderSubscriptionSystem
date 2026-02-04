@@ -8,7 +8,7 @@ import java.util.Objects;
 public record Money(BigDecimal amount) {
 
     public Money {
-        Objects.requireNonNull(amount, "amount");
+        Objects.requireNonNull(amount, "amount must not be null");
         if (amount.scale() > 2) {
             throw new IllegalArgumentException("Money scale cannot exceed 2 decimal places");
         }
@@ -18,6 +18,7 @@ public record Money(BigDecimal amount) {
     }
 
     public static Money from(String value) {
+        Objects.requireNonNull(value, "value must not be null");
         try {
             return new Money(new BigDecimal(value));
         } catch (RuntimeException e) {
@@ -30,6 +31,7 @@ public record Money(BigDecimal amount) {
     }
 
     public Money add(Money other) {
+        Objects.requireNonNull(other, "other must not be null");
         return new Money(this.amount.add(other.amount));
     }
 

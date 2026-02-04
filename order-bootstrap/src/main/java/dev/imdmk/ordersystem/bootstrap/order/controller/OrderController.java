@@ -27,7 +27,7 @@ public final class OrderController {
     private final OrderService service;
 
     public OrderController(OrderService service) {
-        this.service = Objects.requireNonNull(service, "service cannot be null");
+        this.service = Objects.requireNonNull(service, "service must not be null");
     }
 
     @PostMapping
