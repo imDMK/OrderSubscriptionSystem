@@ -20,8 +20,8 @@ public final class SubscriptionEntityMapper {
         return Subscription.from(
                 new SubscriptionId(entity.getId()),
                 new OrderId(entity.getOrderId()),
-                SubscriptionStatus.valueOf(entity.getStatus().name()),
-                expiration
+                expiration,
+                SubscriptionStatus.valueOf(entity.getStatus().name())
         );
     }
 

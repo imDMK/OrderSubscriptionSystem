@@ -1,6 +1,6 @@
 package dev.imdmk.ordersystem.domain.order;
 
-import dev.imdmk.ordersystem.domain.common.AggregateRoot;
+import dev.imdmk.ordersystem.domain.model.AggregateRoot;
 import dev.imdmk.ordersystem.domain.order.event.OrderCancelEvent;
 import dev.imdmk.ordersystem.domain.order.event.OrderPaidEvent;
 import dev.imdmk.ordersystem.domain.order.state.CancelledOrder;

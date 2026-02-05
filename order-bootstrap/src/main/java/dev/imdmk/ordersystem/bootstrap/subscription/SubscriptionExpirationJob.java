@@ -18,7 +18,7 @@ public final class SubscriptionExpirationJob {
         this.expirationService = Objects.requireNonNull(expirationService, "expirationService must not be null");
     }
 
-    @Scheduled(cron = "*/10 * * * * *")
+    @Scheduled(cron = "0 */5 * * * *")
     public void run() {
         expirationService.expireDueSubscriptions(Instant.now());
     }
