@@ -1,93 +1,97 @@
-# Order Subscription System
+## Order Subscription System
 
-A modular Spring Boot application modeling an order and subscription lifecycle using Domain-Driven Design principles.  
-The project demonstrates clean architecture, explicit domain modeling, and a strong separation of concerns between domain, application, and infrastructure layers.
+![Java](https://img.shields.io/badge/Java-21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-4.x-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
+![JUnit](https://img.shields.io/badge/JUnit-5-25A162?style=for-the-badge&logo=junit5&logoColor=white)
 
----
+Spring Boot project implementing an order and subscription lifecycle.
 
-## Key Characteristics
+The main goal of this project is to demonstrate a clean, modular
+architecture inspired by Domain-Driven Design (DDD). The codebase
+focuses on keeping business logic inside the domain layer while
+separating application orchestration and infrastructure concerns.
 
-### Domain-Driven Design (DDD)
-Rich domain model with aggregates, value objects, domain events, and explicit invariants.
+## Architecture
+The project follows a layered approach similar to Clean Architecture /
+Hexagonal Architecture.
 
-### Clean Architecture / Hexagonal Architecture
-Clear separation between:
-- **domain** – pure business logic
-- **application** – use cases and orchestration
-- **infrastructure** – persistence and framework integrations
-- **bootstrap** – Spring configuration and delivery mechanisms
+-   domain – core business logic (aggregates, value objects, domain
+    events)
+-   application – use cases and orchestration
+-   infrastructure – persistence and framework-specific implementations
+-   bootstrap – Spring Boot configuration and delivery layer (REST,
+    scheduling)
 
-### Event-driven domain model
-Aggregates emit domain events (`SubscriptionStarted`, `Expired`, `Cancelled`) collected and published via an application-level publisher.
+The domain layer has no framework dependencies, making it easy to test
+and reason about.
 
-### Explicit business rules
-No anemic models. State transitions and invariants are enforced inside aggregates, not in services.
+## Domain Model
+The domain models the lifecycle of orders and subscriptions.
 
----
+Key concepts:
+-   Order
+-   Subscription
+-   Domain events describing state transitions
 
-## Business Scope
+Subscriptions are associated with orders and follow a simple lifecycle:
+1.  Start
+2.  Cancel
+3.  Expire
 
-The system models:
-- Order creation, payment, and cancellation
-- Subscription lifecycle bound to an order:
-  - start
-  - cancel
-  - expire (time-based)
-- Automatic expiration of subscriptions via scheduled job
+State transitions are validated inside aggregates to ensure that
+business rules are always enforced.
 
-Subscription expiration is policy-driven and time-based (default: 30 days), with support for permanent subscriptions.
+## Business Rules
+The system enforces several rules inside the domain model:
 
----
+-   A subscription can only start for a paid order
+-   An order can only have one active subscription
+-   A subscription can be cancelled
+-   Subscriptions automatically expire after a defined period
+-   Every state change emits a domain event
 
-## Technical Stack
+Expiration is handled externally by a scheduled job which checks
+subscriptions that passed their expiration date.
 
-- Java 17+
-- Spring Boot
-- Spring Data JPA
-- PostgreSQL
-- Flyway (database migrations)
-- Gradle (Kotlin DSL)
 
----
+## Technology Stack
+-   Java 17+
+-   Spring Boot
+-   Spring Data JPA
+-   PostgreSQL
+-   Flyway (database migrations)
+-   Gradle (Kotlin DSL)
 
-## Module Overview
+Project Structure
 
-```text
-order-domain
-  - Aggregates, value objects, domain events, invariants
+    order-domain
+      Aggregates, value objects, domain events, business rules
 
-order-application
-  - Use cases, domain orchestration, policies, repositories (ports)
+    order-application
+      Use cases, orchestration, repository ports, policies
 
-order-infrastructure
-  - JPA entities, repositories, mappers, adapters
+    order-infrastructure
+      JPA entities, repository implementations, mappers
 
-order-bootstrap
-  - Spring configuration, REST controllers, schedulers
-```
-
-## Notable Design Decisions
-* No framework dependencies in the domain layer
-> The domain is framework-agnostic and fully testable in isolation.
-
-* Repositories as ports
-> Application layer depends on interfaces, infrastructure provides adapters.
-
-* Time-based logic isolated from the domain
-> Expiration is triggered externally (scheduler), domain only validates rules.
-
-* Strong typing
-> Identifiers (OrderId, SubscriptionId) and value objects instead of primitives.
+    order-bootstrap
+      Spring Boot configuration, REST controllers, schedulers
 
 ## Example Use Cases
-* Start a subscription for a paid order
-* Prevent duplicate subscriptions for the same order
-* Cancel an active subscription
-* Automatically expire subscriptions past their expiration date
-* Publish domain events on every state transition
 
-Running the Application
-1. Start PostgreSQL
-2. Configure database connection in application.yml
-3. Start the application:
-     ```./gradlew bootRun```
+The application supports several typical operations:
+-   Start a subscription for a paid order
+-   Prevent duplicate subscriptions for the same order
+-   Cancel an active subscription
+-   Automatically expire subscriptions after the configured time
+-   Publish domain events on state transitions
+
+## Running the Application
+1.  Start PostgreSQL
+2.  Configure database connection in application.yml
+3.  Run the application:
+
+    ./gradlew bootRun
+
+## Author
+Dominik Suliga (dominiks8318@gmail.com)
